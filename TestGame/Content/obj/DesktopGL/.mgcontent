@@ -4,6 +4,6 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>F:/CS会/MonoGameLibrary/TestGame/Content/NewEffect.fx</File>
+    <File>D:/Documents/GitHub/MonoGameLibrary/TestGame/Content/NewEffect.fx</File>
   </SourceFiles>
 </SourceFileCollection>

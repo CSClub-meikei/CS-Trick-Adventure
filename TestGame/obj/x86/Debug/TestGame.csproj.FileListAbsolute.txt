@@ -64,3 +64,5 @@ F:\CS会\MonoGameLibrary\TestGame\bin\DesktopGL\x86\Debug\OpenTK.dll
 F:\CS会\MonoGameLibrary\TestGame\bin\DesktopGL\x86\Debug\MonoGameLibrary.pdb
 F:\CS会\MonoGameLibrary\TestGame\obj\x86\Debug\TestGame.csprojResolveAssemblyReference.cache
 E:\CS会\MonoGameLibrary\TestGame\bin\DesktopGL\x86\Debug\Content\smoke.png
+D:\Documents\GitHub\MonoGameLibrary\TestGame\bin\DesktopGL\x86\Debug\Content\enemy.png
+D:\Documents\GitHub\MonoGameLibrary\TestGame\bin\DesktopGL\x86\Debug\Content\smoke.png

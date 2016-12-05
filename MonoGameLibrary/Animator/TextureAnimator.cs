@@ -19,12 +19,23 @@ namespace MonoGameLibrary.Animator
         double OpPerSec;
         int frame;
         int width;
+        int ofx, ofy;
+        int ow, oh;
         public override event EventHandler Finish;
         Texture2D texture;
         double time;
-        public TextureAnimator(Game game, GameObject parent,Texture2D texture, int splitWidth,int mode, double duration) : base(game, parent)
+        public double Alpha = 1;
+        bool fadeOut;
+        public TextureAnimator(Game game, GameObject parent,Texture2D texture, int splitWidth, double duration,int ofx = 0, int ofy = 0,int w = 0,int h = 0) : base(game, parent)
         {
-            this.mode = mode;
+            this.ofx = ofx;
+            this.ofy = ofy;
+            if (w > 0) ow = w;
+            else ow = (int)parent.Width;
+
+            if (h > 0) oh = h;
+            else oh = (int)parent.Height;
+
             this.duration = duration;
             width = splitWidth;
             this.texture = texture;
@@ -35,32 +46,54 @@ namespace MonoGameLibrary.Animator
         }
         public override void Start()
         {
-
+            Enable = true;
             IsAnimate = true;
         }
         public override void Stop()
         {
+            IsAnimate = false;
+            Enable = false;
+            fadeOut = true;
             base.Stop();
         }
         public override void Update(double deltaTime)
         {
             base.Update(deltaTime);
 
-            if (!Enable) return;
-            time += deltaTime;
-            if (time >= duration)
+            if (Enable)
             {
-                frame++;
-                if (frame > texture.Width / width) frame = 0;
+
+                time += deltaTime;
+                if (time >= duration)
+                {
+                    frame++;
+                    if (frame > texture.Width / width)
+                    {
+                        
+                        Stop();
+                        
+                    }
+
+                }
             }
-           
+
+            if (fadeOut)
+            {
+                Alpha -= 0.05;
+                if (Alpha < 0)
+                {
+                    frame = 0;
+                    Alpha = 1;
+                    fadeOut = false;
+                }
+            }
         }
 
         public override void Draw(SpriteBatch batch)
         {
-            batch.Begin(transformMatrix: parent.parent.GetScaleMatrix());
+            batch.Begin(transformMatrix: parent.parent.GetScaleMatrix(),blendState:BlendState.NonPremultiplied);
 
-            batch.Draw(texture, destinationRectangle: new Rectangle((int)parent.ActX + (int)((texture.Width / 2) * (parent.Width / texture.Width)), (int)parent.ActY + (int)((texture.Height / 2) * (parent.Height / texture.Height)), (int)parent.Width, (int)parent.Height),sourceRectangle:new Rectangle(width*frame,0,width,texture.Height), color: Color.White * (float)parent.Alpha * (float)parent.Alpha, rotation: (float)parent.Angle, origin: parent.Origin);
+            batch.Draw(texture, destinationRectangle: new Rectangle((int)parent.ActX+ ofx + (int)((texture.Width / 2) * (parent.Width / texture.Width)), (int)parent.ActY + ofy + (int)((texture.Height / 2) * (parent.Height / texture.Height)),ow,oh),sourceRectangle:new Rectangle(width*frame,0,width,texture.Height), color: Color.White * (float)parent.Alpha * (float)Alpha, rotation: (float)parent.Angle, origin: parent.Origin);
             //batch.Draw(texture, new Rectangle((int)X, (int)Y, (int)Width, (int)Height), Color.White);
             batch.End();
         }

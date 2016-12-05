@@ -1,21 +1,24 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CS_Trick_Adventure.Screens;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGameLibrary;
+using System;
 
 namespace CS_Trick_Adventure
 {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game
+    public class Game1 : MonoGameLibrary.Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-
+        
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
+            SetWindowSize(1280, 720);
+            //Window.IsBorderless = true;
+            DebugMode = true;
+            graphics.PreferMultiSampling = true;
         }
 
         /// <summary>
@@ -27,8 +30,10 @@ namespace CS_Trick_Adventure
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            Input.Initialize(this);
+            Assets.Init(this);
             base.Initialize();
+            screens.Add(new GameScreen(this));
         }
 
         /// <summary>
@@ -61,10 +66,11 @@ namespace CS_Trick_Adventure
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
+           // Console.WriteLine(gameTime.ElapsedGameTime.Milliseconds.ToString());
             // TODO: Add your update logic here
-
+            
             base.Update(gameTime);
+            Input.update();
         }
 
         /// <summary>

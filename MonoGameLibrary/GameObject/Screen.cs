@@ -19,6 +19,20 @@ namespace MonoGameLibrary.Object
         public double Scale { get; set; }
         protected Game game;
 
+        public Point Camera
+        {
+            get
+            {
+                return new Point((int)X * -1, (int)Y * -1);
+            }
+            set
+            {
+                Point _point = new Point(value.X * -1, value.Y * -1);
+                X = _point.X;
+                Y = _point.Y;
+            }
+        }
+
         public Screen(Game game,double x = 0,double y = 0,double scale = 1)
         {
             this.game = game;

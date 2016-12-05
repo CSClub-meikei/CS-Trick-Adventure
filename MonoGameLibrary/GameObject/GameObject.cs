@@ -29,6 +29,8 @@ namespace MonoGameLibrary.Object
         public double Alpha { get; set; }
         public List<GameObjectAnimator> Animators = new List<GameObjectAnimator>();
 
+        public int RenderMode = 0;
+        public SpriteEffects SpriteEffects { get; set; }
 
         public string DebugMessage { get; set; }
 
@@ -53,7 +55,12 @@ namespace MonoGameLibrary.Object
 
         protected Game game;
         public Screen parent;
-        public Texture2D Texture { get; set; }
+
+        private Texture2D _texture;
+        public Texture2D Texture {
+            get { return _texture; }
+            set { _texture = value; if(value!=null)Origin = new Vector2((float)(value.Width / 2), (float)(value.Height / 2)); }
+        }
         
         public GameObject(Game game,Screen screen,Texture2D texture,int x,int y, int width,int height)
         {
@@ -64,7 +71,7 @@ namespace MonoGameLibrary.Object
             Y = y;
             Width = width;
             Height = height;
-            if(texture!=null)Origin = new Vector2((float)(texture.Width / 2), (float)(texture.Height / 2));
+            //if(texture!=null)Origin = new Vector2((float)(texture.Width / 2), (float)(texture.Height / 2));
             Alpha = 1;
             debugTexture = Assets.getColorTexture(game, Color.Yellow);
         }
@@ -95,8 +102,19 @@ namespace MonoGameLibrary.Object
 
 
             batch.Begin(transformMatrix: parent.GetScaleMatrix());
+            if (RenderMode == 0)
+            {
+                batch.Draw(Texture, destinationRectangle: new Rectangle((int)ActX + (int)((Texture.Width / 2) * (Width / Texture.Width)), (int)ActY + (int)((Texture.Height / 2) * (Height / Texture.Height)), (int)Width, (int)Height), color: Color.White * (float)Alpha * (float)parent.Alpha, rotation: (float)Angle, origin: Origin,effects: SpriteEffects);
 
-            batch.Draw(Texture, destinationRectangle: new Rectangle((int)ActX + (int)((Texture.Width / 2) * (Width / Texture.Width)), (int)ActY + (int)((Texture.Height / 2) * (Height / Texture.Height)), (int)Width, (int)Height), color: Color.White * (float)Alpha * (float)parent.Alpha, rotation: (float)Angle, origin: Origin);
+            }else if (RenderMode == 1)
+            {
+                for(int y = 0; y < (int)(Height/Texture.Height);y++)
+                    for(int x = 0; x < (int)(Width / Texture.Height); x++)
+                    {
+                        batch.Draw(Texture, destinationRectangle: new Rectangle((int)ActX + (Texture.Width*x) + (int)((Texture.Width / 2)), (int)ActY + (Texture.Height*y) + (int)((Texture.Height / 2) ), (int)Texture.Width, (int)Texture.Height), color: Color.White * (float)Alpha * (float)parent.Alpha, rotation: (float)Angle, origin: Origin, effects: SpriteEffects);
+
+                    }
+            }
             //batch.Draw(texture, new Rectangle((int)X, (int)Y, (int)Width, (int)Height), Color.White);
             batch.End();
 
@@ -104,6 +122,7 @@ namespace MonoGameLibrary.Object
             
            
         }
+        
 
         public void SetAngle(double r)
         {
